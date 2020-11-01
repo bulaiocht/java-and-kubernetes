@@ -32,9 +32,15 @@ spec:
           # for our container
           env:
             - name: ECHO_ENDPOINT
-              value: "echo-node-port"
+              valueFrom:
+                configMapKeyRef:
+                  key: external.host
+                  name: caller-service-config
             - name: ECHO_PORT
-              value: "8081"
+              valueFrom:
+                configMapKeyRef:
+                  key: external.port
+                  name: caller-service-config
             - name: SECRET_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -124,3 +130,12 @@ stringData:
   spring.user.password: s3cr3t_!Pa$$w0rd!
 metadata:
   name: spring-secrets
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caller-service-config
+data:
+  external.host: "echo-node-port"
+  external.port: "8081"
