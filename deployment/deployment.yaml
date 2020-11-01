@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend-pod
+  labels:
+    app: back-end
+spec:
+  containers:
+    ## Echo container config
+    - name: echo-service
+      image: echo-service:v1
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 8081
+      resources:
+        limits:
+          memory: "500M"
+          cpu: "250m"
+
+    ## Caller container config
+    - name: caller-service
+      image: caller-service:v1
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 8082
+      resources:
+        limits:
+          memory: "500M"
+          cpu: "250m"
