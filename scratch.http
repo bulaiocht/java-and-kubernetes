@@ -1,0 +1,8 @@
+#Echo hello
+GET http://localhost:8081
+###
+#Echo with message
+POST http://localhost:8081/echo
+Content-Type: text/plain
+
+"Hello from Caller Service"

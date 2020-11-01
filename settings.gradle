@@ -1,0 +1,3 @@
+rootProject.name = 'java-and-kubernetes'
+include 'echo-service'
+include 'caller-service'
