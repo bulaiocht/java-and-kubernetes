@@ -1,3 +1,4 @@
+# Deployment only for Caller Service
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +18,7 @@ spec:
         app: back-end
     spec:
       containers:
-
+        # Now we have only one container of caller-service in our deployment
         - name: caller-service
           image: caller-service:v1
           imagePullPolicy: Never
@@ -27,7 +28,33 @@ spec:
             limits:
               memory: "500M"
               cpu: "250m"
+          # Here we are setting up an environment variables
+          # for our container
+          env:
+            - name: ECHO_ENDPOINT
+              value: "echo-node-port"
+            - name: ECHO_PORT
+              value: "8081"
 
+# Deployment for Echo Service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-deployment
+  labels:
+    app: echo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo-service-pod
+  template:
+    metadata:
+      labels:
+        app: echo-service-pod
+    spec:
+      containers:
         - name: echo-service
           image: echo-service:v1
           imagePullPolicy: Never
@@ -38,8 +65,7 @@ spec:
               memory: "500M"
               cpu: "250m"
 ---
-# NodePort configuration
-
+# NodePort service for caller-service which is our back-end
 apiVersion: v1
 kind: Service
 metadata:
@@ -51,6 +77,18 @@ spec:
   ports:
     - port: 8082
 
+---
+# NodePort service for echo-service
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-node-port
+spec:
+  type: NodePort
+  selector:
+    app: echo-service-pod
+  ports:
+    - port: 8081
 ---
 # Ingress configuration
 apiVersion: networking.k8s.io/v1
