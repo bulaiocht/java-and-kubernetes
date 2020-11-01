@@ -4,3 +4,8 @@ server:
 api:
   external-service-host: ${ECHO_ENDPOINT:localhost}
   external-service-port: ${ECHO_PORT:8081}
+
+security:
+  user:
+    name: ${SECRET_USERNAME:test}
+    password: ${SECRET_PASSWORD:test}
