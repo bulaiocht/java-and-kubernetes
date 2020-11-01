@@ -1,32 +1,42 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: backend-pod
+  name: backend-deployment
   labels:
-    app: back-end
+    app: backend-deployment
 spec:
-  containers:
-    ## Echo container config
-    - name: echo-service
-      image: echo-service:v1
-      imagePullPolicy: Never
-      ports:
-        - containerPort: 8081
-      resources:
-        limits:
-          memory: "500M"
-          cpu: "250m"
+  # This is a ReplicaSet configuration
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-end
+  # This is a template for a Pod
+  template:
+    metadata:
+      labels:
+        app: back-end
+    spec:
+      containers:
 
-    ## Caller container config
-    - name: caller-service
-      image: caller-service:v1
-      imagePullPolicy: Never
-      ports:
-        - containerPort: 8082
-      resources:
-        limits:
-          memory: "500M"
-          cpu: "250m"
+        - name: caller-service
+          image: caller-service:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8082
+          resources:
+            limits:
+              memory: "500M"
+              cpu: "250m"
+
+        - name: echo-service
+          image: echo-service:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          resources:
+            limits:
+              memory: "500M"
+              cpu: "250m"
 ---
 # NodePort configuration
 
