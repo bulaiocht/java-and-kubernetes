@@ -27,3 +27,34 @@ spec:
         limits:
           memory: "500M"
           cpu: "250m"
+---
+# NodePort configuration
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-node-port
+spec:
+  type: NodePort
+  selector:
+    app: back-end
+  ports:
+    - port: 8082
+
+---
+# Ingress configuration
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-node-port
+                port:
+                  number: 8082
